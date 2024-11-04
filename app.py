@@ -11,7 +11,8 @@ import datetime
 from dotenv import load_dotenv
 from flask_mail import Mail, Message
 import requests
-from plot_rec import MovieRecommender
+#from plot_rec import MovieRecommender
+from csv_plot_rec import MovieRecommender
 
 
 # Load environment variables
@@ -390,6 +391,17 @@ def get_recommendations():
 def plot_search():
     return render_template('plot.html')
 
+@app.route('/plot_guess', methods=['POST'])
+def plot_guess():
+    data = request.get_json()
+    plot = data.get('plot')
+    if not plot:
+        return jsonify({"error": "Plot is required"}), 400
+    recommender = MovieRecommender(openai_key= openai_key)
+    guess = recommender.guess_movie(plot)
+    print(guess)
+    return jsonify({"guess": guess}), 200
+
 @app.route('/plot_recommend', methods=['POST'])
 def plot_recommend():
     data = request.get_json()
@@ -397,12 +409,9 @@ def plot_recommend():
     if not plot:
         return jsonify({"error": "Plot is required"}), 400
     recommender = MovieRecommender(openai_key= openai_key)
-    recommendations = recommender.recommend_movies(plot)
-    type(recommendations)
-    if isinstance(recommendations, str):
-        recommendations = recommendations.split(";")
+    recommendations = recommender.rec_movie(plot)
+    print(recommendations)
     return jsonify({"recommendations": recommendations}), 200
-
 
 # Initialize and start the scheduler
 scheduler = BackgroundScheduler()
