@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const recommendations = await fetchRecommendations(plot);
-            displayplotResults(recommendations);
+            displayRecResults(recommendations);
         } catch (error) {
             displayplotMessage(`Error: ${error.message}`);
         }
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to display results on the page
-    async function displayplotResults(recommendations) {
+    async function displayRecResults(recommendations) {
         resultsContainer.innerHTML = '';  // Clear previous results
 
         if (!recommendations || recommendations.length === 0) {
